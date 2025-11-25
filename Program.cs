@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 
 namespace BinCucha
 {
-    public class MaxBinHeap
+    public class MaxBinHeap<T>
     {
-        private int[] elements;
+        private T[] elements;
         private int count;
 
-        public MaxBinHeap(int[] array)
+        public MaxBinHeap(T[] array)
         {
             if (array == null) throw new ArgumentNullException("Массив не может быть пустым");
-            elements = new int[array.Length];
+            elements = new T[array.Length];
             for (int i = 0; i < array.Length; i++)
             {
                 elements[i] = array[i];
@@ -22,26 +22,26 @@ namespace BinCucha
                 HeapifyDown(i);
             }
         }
-        public int GetMax()
+        public T GetMax()
         {
 
             if (count == 0) throw new Exception("Куча пуста");
             return elements[0];
         }
-        public int RemoveMax()
+        public T RemoveMax()
         {
             if (count == 0) throw new Exception("Куча пуста");
-            int max = elements[0];
+            T max = elements[0];
             elements[0] = elements[count - 1];
             count--;
             HeapifyDown(0);
             return max;
         }
-        public void Add(int value)
+        public void Add(T value)
         {
             if (count == elements.Length)
             {
-                int[] newElements = new int[elements.Length * 2];
+                T[] newElements = new T[elements.Length * 2];
                 for (int i = 0; i < elements.Length; i++)
                 {
                     newElements[i] = elements[i];
@@ -53,10 +53,10 @@ namespace BinCucha
             count++;
             HeapifyUp(count - 1);
         }
-        public void ChangeValue(int index, int newValue)
+        public void ChangeValue(int index, T newValue)
         {
             if (index < 0 || index >= count) throw new Exception("Неверный индекс");
-            int oldValue = elements[index];
+            T oldValue = elements[index];
             elements[index] = newValue;
             if (newValue > oldValue)
             {
@@ -67,10 +67,10 @@ namespace BinCucha
                 HeapifyDown(index);
             }
         }
-        public MaxBinHeap Merge(MaxBinHeap other)
+        public MaxBinHeap<T> Merge(MaxBinHeap<T> other)
         {
 
-            int[] newArray = new int[count + other.count];
+            T[] newArray = new T[count + other.count];
 
 
             for (int i = 0; i < count; i++)
@@ -84,7 +84,7 @@ namespace BinCucha
                 newArray[count + i] = other.elements[i];
             }
 
-            return new MaxBinHeap(newArray);
+            return new MaxBinHeap<T>(newArray);
         }
         private void HeapifyUp(int index)
         {
@@ -94,7 +94,7 @@ namespace BinCucha
                 int parentIndex = (index - 1) / 2;
                 if (elements[index] > elements[parentIndex])
                 {
-                    int tmp = elements[index];
+                    T tmp = elements[index];
 
                     elements[index] = elements[parentIndex];
                     elements[parentIndex] = tmp;
@@ -121,7 +121,7 @@ namespace BinCucha
                 }
                 if (largest != index)
                 {
-                    int tmp = elements[index];
+                    T tmp = elements[index];
                     elements[index] = elements[largest];
                     elements[largest] = tmp;
                     index = largest;
@@ -156,7 +156,7 @@ namespace BinCucha
                 mas[i] = element;
             }
 
-            MaxBinHeap heap = new MaxBinHeap(mas);
+            MaxBinHeap<T> heap = new MaxBinHeap<T>(mas);
             int count = heap.GetCount();
             int max = heap.GetMax();
 
@@ -164,7 +164,7 @@ namespace BinCucha
             Console.WriteLine($"Максимальный элемент в массиве: {max}");
             heap.Print();
 
-            Console.WriteLine("1. Add(50) и Add(99):");
+            Console.WriteLine("1. Add:");
             heap.Add(50);
             heap.Add(99);
             heap.Print();
@@ -174,20 +174,16 @@ namespace BinCucha
             Console.WriteLine("\n3. RemoveMax(): " + heap.RemoveMax());
             heap.Print();
 
-            Console.WriteLine("\n4. ChangeValue(index: 2, value: 150):");
+            Console.WriteLine("\n4. ChangeValue:");
             heap.ChangeValue(2, 150);
             heap.Print();
 
-            Console.WriteLine("\n5. Создаём вторую кучу и делаем Merge:");
-            MaxBinHeap heap2 = new MaxBinHeap(new int[] { 200, 100, 300 }); 
-            Console.Write("   Вторая куча: "); heap2.Print();
+            Console.WriteLine("\n5.Merge:");
+            MaxBinHeap heap2 = new MaxBinHeap(new int[] { 200, 100, 300 });
+            Console.Write("Вторая куча: "); heap2.Print();
 
-            MaxBinHeap merged = heap.Merge(heap2); 
+            MaxBinHeap merged = heap.Merge(heap2);
             Console.Write("   После слияния: "); merged.Print();
-
-            Console.WriteLine($"\nФинал: {merged.GetMax()}");
-
-
             Console.ReadKey();
         }
     }
